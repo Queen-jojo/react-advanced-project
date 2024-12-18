@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, useLoader } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Heading,
@@ -18,17 +18,15 @@ import {
   Input,
   Textarea,
 } from "@chakra-ui/react";
-import { Toast } from "react-toastify";
+import { ToastContainer, useToast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-export const loader = async ({ params }) => {};
 
 export const EventPage = () => {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const toast = useRef(null);
+  const toast = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -149,7 +147,6 @@ export const EventPage = () => {
                 Save
               </Button>
               <Button onClick={() => setIsEditing(false)}>Cancel</Button>
-              <Toast ref={toast} />
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -173,6 +170,7 @@ export const EventPage = () => {
           </ModalContent>
         </Modal>
       )}
+      <ToastContainer />
     </Box>
   );
 };
