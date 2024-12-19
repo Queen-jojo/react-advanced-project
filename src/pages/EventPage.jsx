@@ -18,16 +18,22 @@ import {
   Input,
   Textarea,
 } from "@chakra-ui/react";
-import { ToastContainer, useToast } from "react-toastify";
+// import { ToastContainer, useToast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const EventPage = () => {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
+  // const [creator, setCreator] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const toast = useToast();
+  // const toast = useToast();
   const navigate = useNavigate();
+
+  // const CategoryTitle = (categoryIds) => {
+  //   console.log("categoryIds", categoryIds);
+  //   return categoryIds;
+  // };
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -39,9 +45,29 @@ export const EventPage = () => {
     fetchEvent();
   }, [eventId]);
 
+  // useEffect(() => {
+  //   const fetchCreator = async () => {
+  //     const response = await fetch(
+  //       `http://localhost:3000/users/${event.createdBy}`
+  //     );
+  //     const data = await response.json();
+  //     setCreator(data);
+  //   };
+
+  //   if (event || event.createdBy) {
+  //     console.log("eventRegel49:", event);
+  //     fetchCreator();
+  //   }
+  // }, [event]);
+
   if (!event) {
     return <Box>Loading...</Box>;
   }
+
+  // const CategoryTitle = (categoryIds) => {
+  //   console.log("categoryIds", categoryIds);
+  //   return categoryIds;
+  // };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -65,10 +91,10 @@ export const EventPage = () => {
       const updatedEvent = await response.json();
       setEvent(updatedEvent);
       setIsEditing(false);
-      toast.success("Event updated succesfully!");
+      // toast.success("Event updated succesfully!");
     } else {
       console.error("Error updating event:", response.statusText);
-      toast.error("Error updating event. Please try again.");
+      // toast.error("Error updating event. Please try again.");
     }
   };
 
@@ -84,18 +110,26 @@ export const EventPage = () => {
 
       if (response.ok) {
         navigate("/events");
-        toast.success("Event deleted succesfully");
+        // toast.success("Event deleted succesfully");
       } else {
         console.error("Error deleting event:", response.statusText);
-        toast.error("Error deleting event. Please try again");
+        // toast.error("Error deleting event. Please try again");
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("An error occured while deleting the event.");
+      // toast.error("An error occured while deleting the event.");
     } finally {
       setIsDeleting(false);
     }
   };
+
+  // const eventInfo = CategoryTitle(event.categoryIds);
+  // console.log("eventInfo:", eventInfo);
+
+  // const eventInfo = CategoryTitle(event.categoryIds);
+  // console.log("eventInfo:", eventInfo);
+
+  // console.log("event.creator", event.creator);
 
   return (
     <Box>
@@ -104,9 +138,10 @@ export const EventPage = () => {
       <Text>{event.description}</Text>
       <Text>Start Time: {event.startTime}</Text>
       <Text>End Time: {event.endTime}</Text>
-      <Text>Categories: {event.categories.join(", ")}</Text>
-      <Text>Created by: {event.creator.name}</Text>
-      <Image src={event.creator.image} alt={event.creator.name} />
+      <Text>Categories: {event.categoryIds}</Text>
+      {/* <Text>creator: {creator.name}</Text> */}
+      {/* <Text>Created by: {event.creator.name}</Text> */}
+      {/* <Image src={event.image} alt={event.name} /> */}
       <Button onClick={handleEdit}>Edit</Button>
       <Button colorScheme="red" onClick={handleDelete}>
         Delete
@@ -170,7 +205,7 @@ export const EventPage = () => {
           </ModalContent>
         </Modal>
       )}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </Box>
   );
 };
