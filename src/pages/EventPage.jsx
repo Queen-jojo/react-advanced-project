@@ -38,6 +38,7 @@ export const EventPage = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       const response = await fetch(`http://localhost:3000/events/${eventId}`);
+      console.log("responseId", eventId);
       const data = await response.json();
       setEvent(data);
     };
@@ -109,7 +110,7 @@ export const EventPage = () => {
       });
 
       if (response.ok) {
-        navigate("/events");
+        navigate("/");
         // toast.success("Event deleted succesfully");
       } else {
         console.error("Error deleting event:", response.statusText);
