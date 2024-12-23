@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Heading,
   Box,
@@ -14,12 +14,14 @@ import {
   ModalBody,
   ModalFooter,
 } from "@chakra-ui/react";
-import { useLoaderData, NavLink, useParams } from "react-router-dom";
+import { useLoaderData, NavLink } from "react-router-dom";
 import EventForm from "../components/EventForm";
+import { useNavigate } from "react-router-dom";
+// import events from "./backend_data/events.json";
 
 export const loader = async () => {
   const response = await fetch("http://localhost:3000/events");
-  console.log("response", response);
+
   return {
     events: await response.json(),
   };
@@ -27,27 +29,44 @@ export const loader = async () => {
 
 export const EventsPage = () => {
   // const [events, setEvents] = useState([]);
-  const { eventId } = useParams();
+  // const { eventId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const { events } = useLoaderData();
+  console.log("events", events);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [eventIdToDelete, setEventIdToDelete] = useState(null);
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchEvents = async () => {
-  //     const response = await fetch("http://localhost:3000/events");
-  //     const data = await response.json();
-  //     setEvents(data);
-  //   };
+  useEffect(() => {
+    const filteredEvents = events.filter((event) => {
+      const lowerCaseTitle = event.title.toLowerCase();
+      const lowerCaseDescription = event.description.toLowerCase();
+      const lowerCaseSearchQuery = searchQuery.toLowerCase();
 
-  //   fetchEvents();
-  // }, []);
+      const matchesSearch =
+        lowerCaseTitle.includes(lowerCaseSearchQuery) ||
+        lowerCaseDescription.includes(lowerCaseSearchQuery);
+
+      const matchesCategories =
+        selectedCategories.length === 0 ||
+        event.categories.some((category) =>
+          selectedCategories.includes(category)
+        );
+      return matchesSearch && matchesCategories;
+    });
+    setFilteredEvents(filteredEvents);
+  }, [events, searchQuery, selectedCategories]);
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/events/${eventId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3000/events/${eventIdToDelete}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         // navigate("/events");
@@ -61,15 +80,30 @@ export const EventsPage = () => {
       // toast.error("An error occured while deleting the event.");
     } finally {
       setIsDeleting(false);
+      navigate(0);
     }
   };
+
+  // const confirmDelete = () => {
+  //   if (eventIdToDelete) {
+  //     filteredEvents.filter((event) => {
+  //       if (event.id === eventIdToDelete) {
+  //         const newFilteredEvents = filteredEvents.filter(
+  //           (event) => event.id !== eventIdToDelete
+  //         );
+  //         console.log("newFilteredEvents", newFilteredEvents);
+  //         setIsDeleting(false);
+  //         setFilteredEvents(newFilteredEvents);
+  //       }
+  //     });
+  //   }
+  // };
 
   const deleteEvent = (e, eventId) => {
     console.log("eventId", eventId);
     e.preventDefault();
     setIsDeleting(true);
-    events.filter((event) => event.id !== eventId);
-    console.log("events", events);
+    setEventIdToDelete(eventId);
   };
 
   const CategoryTitle = (categoryIds) => {
@@ -78,28 +112,9 @@ export const EventsPage = () => {
   };
 
   const uniqueCategories = [
-    ...new Set(events.flatMap((event) => event.categories)),
+    ...new Set(events.flatMap((event) => event.categoryIds)),
   ];
-  console.log("events", events);
-
-  const filteredEvents = events.filter((event) => {
-    console.log("event", event);
-    const lowerCaseTitle = event.title.toLowerCase();
-    const lowerCaseDescription = event.description.toLowerCase();
-    const lowerCaseSearchQuery = searchQuery.toLowerCase();
-
-    const matchesSearch =
-      lowerCaseTitle.includes(lowerCaseSearchQuery) ||
-      lowerCaseDescription.includes(lowerCaseSearchQuery);
-
-    const matchesCategories =
-      selectedCategories.length === 0 ||
-      event.categories.some((category) =>
-        selectedCategories.includes(category)
-      );
-
-    return matchesSearch && matchesCategories;
-  });
+  console.log("unique", uniqueCategories);
 
   return (
     <Box>
