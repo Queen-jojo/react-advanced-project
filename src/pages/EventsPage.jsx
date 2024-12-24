@@ -13,6 +13,9 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  useToast,
+  Flex,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { useLoaderData, NavLink } from "react-router-dom";
 import EventForm from "../components/EventForm";
@@ -21,9 +24,11 @@ import { useNavigate } from "react-router-dom";
 
 export const loader = async () => {
   const response = await fetch("http://localhost:3000/events");
+  const categories = await fetch("http://localhost:3000/categories");
 
   return {
     events: await response.json(),
+    categories: await categories.json(),
   };
 };
 
@@ -32,12 +37,13 @@ export const EventsPage = () => {
   // const { eventId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const { events } = useLoaderData();
+  const { events, categories } = useLoaderData();
   console.log("events", events);
   const [isDeleting, setIsDeleting] = useState(false);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [eventIdToDelete, setEventIdToDelete] = useState(null);
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     const filteredEvents = events.filter((event) => {
@@ -70,14 +76,14 @@ export const EventsPage = () => {
 
       if (response.ok) {
         // navigate("/events");
-        // toast.success("Event deleted succesfully");
+        toast.success("Event deleted succesfully");
       } else {
         console.error("Error deleting event:", response.statusText);
-        // toast.error("Error deleting event. Please try again");
+        toast.error("Error deleting event. Please try again");
       }
     } catch (error) {
       console.error("Error:", error);
-      // toast.error("An error occured while deleting the event.");
+      toast.error("An error occured while deleting the event.");
     } finally {
       setIsDeleting(false);
       navigate(0);
@@ -108,7 +114,12 @@ export const EventsPage = () => {
 
   const CategoryTitle = (categoryIds) => {
     console.log("categoryIds", categoryIds);
-    return categoryIds;
+    console.log("categories", categories);
+    return categoryIds.map(
+      (categoryId) =>
+        categories.find((category) => category.id === categoryId).name
+    );
+    // return categoryIds;
   };
 
   const uniqueCategories = [
@@ -117,72 +128,145 @@ export const EventsPage = () => {
   console.log("unique", uniqueCategories);
 
   return (
-    <Box>
-      <Heading>Event List</Heading>;
-      <Input
-        placeholder="Search Events"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-      <Select
-        multiplevalue={selectedCategories}
-        onChange={(selectedOptions) => setSelectedCategories(selectedOptions)}
-        options={uniqueCategories.map((category) => ({
-          value: category,
-          label: category,
-        }))}
-        placeholder="Filtered by Category"
-      />
-      <EventForm />
-      {/* {filteredEvents.map((event) => (
-        <Box key={event.id}>
-          <Link to={`/event/${event.id}`}>
-            <Heading as="h3">{event.title}</Heading>
-            <Text>{event.description}</Text>
-            <Image src={event.image} alt={event.title} />
-            <Text>Start Time: {event.startTime}</Text>
-            <Text>End Time: {event.endTime}</Text>
-            <Text>Categories: {event.categories.join(", ")}</Text>
-            return
-          </Link>
-        </Box>
-      ))} */}
-      {filteredEvents.map((event) => {
-        console.log("event/hello:", event);
-        const eventInfo = CategoryTitle(event.categoryIds);
-        console.log("eventInfo:", eventInfo);
+    <Flex direction="column" bgColor="pink.100" minH="100vh" overflowY="auto">
+      <Box p={4} display="flex" alignItems="center" justifyContent="center">
+        <Text fontSize="2xl" fontWeight="bold" mb={6}>
+          Event List
+        </Text>
+      </Box>
+      <Box p={4} display="flex" alignItems="center" justifyContent="center">
+        <Input
+          placeholder="Search Events"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </Box>
+      <Box p={4} display="flex" alignItems="center" justifyContent="center">
+        <Select
+          multiplevalue={selectedCategories}
+          onChange={(selectedOptions) => setSelectedCategories(selectedOptions)}
+          options={uniqueCategories.map((category) => ({
+            value: category,
+            label: category,
+          }))}
+          placeholder="Filtered by Category"
+        />
+      </Box>
 
-        return (
-          <NavLink key={event.id} to={`/event/${event.id}`}>
-            <Heading as="h3">{event.title}</Heading>
-            <Text>{event.description}</Text>
-            <Image src={event.image} alt={event.title} />
-            <Text>Start Time: {event.startTime}</Text>
-            <Text>End Time: {event.endTime}</Text>
-            <Text>Categories: {eventInfo}</Text>
-            <Button colorScheme="red" onClick={(e) => deleteEvent(e, event.id)}>
-              Delete Event
-            </Button>
-          </NavLink>
-        );
-      })}
-      ;
-      <Modal isOpen={isDeleting} onClose={() => setIsDeleting(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Confirm removed Event</ModalHeader>
-          <ModalBody>
-            Are you sure you want to delete this event? This action cannot be
-            undone.
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="red" mr={3} onClick={confirmDelete}>
-              Remove Event
-            </Button>
-            <Button onClick={() => setIsDeleting(false)}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Box>
+      <Box p={4} display="flex" alignItems="left" justifyContent="left">
+        <EventForm />
+      </Box>
+
+      <Box flex="1" p={4}>
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }}>
+          {filteredEvents.map((event) => {
+            console.log("event/hello:", event);
+            const eventInfo = CategoryTitle(event.categoryIds);
+            console.log("eventInfo:", eventInfo);
+
+            return (
+              <NavLink key={event.id} to={`/event/${event.id}`}>
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Heading as="h3">{event.title}</Heading>
+                </Box>
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text>{event.description}</Text>
+                </Box>
+
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Image
+                    src={event.image}
+                    alt={event.title}
+                    borderRadius="md"
+                    mb={4}
+                    width="200px"
+                    height="150px"
+                  />
+                </Box>
+
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text>Location: {event.location}</Text>
+                </Box>
+
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text>Start Time: {event.startTime}</Text>
+                </Box>
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text>End Time: {event.endTime}</Text>
+                </Box>
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text>Categories: {eventInfo}</Text>
+                </Box>
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Button
+                    colorScheme="red"
+                    onClick={(e) => deleteEvent(e, event.id)}
+                  >
+                    Delete Event
+                  </Button>
+                </Box>
+              </NavLink>
+            );
+          })}
+
+          <Modal isOpen={isDeleting} onClose={() => setIsDeleting(false)}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Confirm removed Event</ModalHeader>
+              <ModalBody>
+                Are you sure you want to delete this event? This action cannot
+                be undone.
+              </ModalBody>
+              <ModalFooter>
+                <Button colorScheme="red" mr={3} onClick={confirmDelete}>
+                  Remove Event
+                </Button>
+                <Button onClick={() => setIsDeleting(false)}>Cancel</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </SimpleGrid>
+      </Box>
+    </Flex>
   );
 };

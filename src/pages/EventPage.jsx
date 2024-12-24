@@ -143,7 +143,9 @@ export const EventPage = () => {
       {/* <Text>creator: {creator.name}</Text> */}
       {/* <Text>Created by: {event.creator.name}</Text> */}
       {/* <Image src={event.image} alt={event.name} /> */}
-      <Button onClick={handleEdit}>Edit</Button>
+      <Button colorScheme="purple" onClick={handleEdit}>
+        Edit
+      </Button>
       <Button colorScheme="red" onClick={handleDelete}>
         Delete
       </Button>
@@ -176,13 +178,32 @@ export const EventPage = () => {
                     defaultValue={event.categories}
                   />
                 </FormControl>
+                <FormControl mt={4}>
+                  <FormLabel htmlFor="startTime">Start Time:</FormLabel>
+                  <Textarea
+                    id="startTime"
+                    name="startTime"
+                    defaultValue={event.startTime}
+                  />
+                </FormControl>
               </form>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} type="submit">
+              <Button
+                onClick={() => setIsEditing(false)}
+                colorScheme="blue"
+                mr={3}
+                type="submit"
+              >
                 Save
               </Button>
-              <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+              <Button
+                onClick={() => setIsEditing(false)}
+                colorScheme="red"
+                mr={3}
+              >
+                Cancel
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

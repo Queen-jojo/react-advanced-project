@@ -1,17 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Button, Box } from "@chakra-ui/react";
 
 export const Navigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleHomeClick = () => {
+    if (location.pathname === "/") {
+      window.location.reload();
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Events</Link>
-        </li>
-        <li>
-          <Link to="/event/1">Event</Link>
-        </li>
-      </ul>
-    </nav>
+    <Box p={4} display="flex" alignItems="left" justifyContent="left">
+      <nav>
+        <Button colorScheme="purple" onClick={handleHomeClick}>
+          Home
+        </Button>
+      </nav>
+    </Box>
   );
 };

@@ -21,6 +21,7 @@ const EventForm = () => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [categories, setCategories] = useState("");
+  const [image, setImage] = useState("");
 
   const handleSubmit = async () => {
     try {
@@ -35,6 +36,7 @@ const EventForm = () => {
           startTime,
           endTime,
           categories,
+          image,
         }),
       });
 
@@ -53,7 +55,9 @@ const EventForm = () => {
 
   return (
     <>
-      <Button onClick={onOpen}>Add an Event</Button>
+      <Button colorScheme="purple" onClick={onOpen}>
+        Add an Event
+      </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -95,6 +99,10 @@ const EventForm = () => {
                 value={categories}
                 onChange={(e) => setCategories(e.target.value)}
               />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Image</FormLabel>
+              <Input value={image} onChange={(e) => setImage(e.target.value)} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
