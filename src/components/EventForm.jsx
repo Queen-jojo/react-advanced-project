@@ -14,31 +14,57 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-const EventForm = () => {
+const EventForm = ({ categories }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [createdBy, setCreatedBy] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
+  const [categoryIds, setCategoryIds] = useState("");
+  const [location, setLocation] = useState("Amsterdam");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [categories, setCategories] = useState("");
-  const [image, setImage] = useState("");
+
+  const handleSelectionChange = (e) => {
+    console.log(e.target.selectedOptions);
+    const selectedValues = Array.from(e.target.selectedOptions).map((option) =>
+      parseInt(option.value, 10)
+    );
+    console.log("selectedValues:", selectedValues);
+    setCategoryIds(selectedValues);
+  };
 
   const handleSubmit = async () => {
     try {
+      console.log("createdBy", createdBy);
+      console.log("title", title);
+      console.log("description", description);
+      console.log("image", image);
+      console.log("categoryIds", categoryIds);
+      console.log("location", location);
+      console.log("startTime", startTime);
+      console.log("endTime", endTime);
+
       const response = await fetch(" http://localhost:3000/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          createdBy,
           title,
           description,
+          image,
+          categoryIds,
+          location,
           startTime,
           endTime,
-          categories,
-          image,
         }),
       });
+
+      // const CategoryInfo = (categories) => {
+      //   // return categoryIds;
+      // };
 
       if (response.ok) {
         console.log("Event added successfully");
@@ -65,18 +91,43 @@ const EventForm = () => {
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Created By</FormLabel>
               <Input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={createdBy}
+                onChange={(e) => setCreatedBy(e.target.value)}
               />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Title</FormLabel>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </FormControl>
             <FormControl>
               <FormLabel>Description</FormLabel>
               <Input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Categories</FormLabel>
+              <select multiple onChange={handleSelectionChange}>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Image</FormLabel>
+              <Input value={image} onChange={(e) => setImage(e.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Location</FormLabel>
+              <Input
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
               />
             </FormControl>
             <FormControl>
@@ -92,17 +143,6 @@ const EventForm = () => {
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
               />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Categories</FormLabel>
-              <Input
-                value={categories}
-                onChange={(e) => setCategories(e.target.value)}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Image</FormLabel>
-              <Input value={image} onChange={(e) => setImage(e.target.value)} />
             </FormControl>
           </ModalBody>
           <ModalFooter>

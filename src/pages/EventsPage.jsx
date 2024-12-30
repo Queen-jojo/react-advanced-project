@@ -154,7 +154,7 @@ export const EventsPage = () => {
       </Box>
 
       <Box p={4} display="flex" alignItems="left" justifyContent="left">
-        <EventForm />
+        <EventForm categories={categories} />
       </Box>
 
       <Box flex="1" p={4}>
@@ -197,6 +197,14 @@ export const EventsPage = () => {
                     width="200px"
                     height="150px"
                   />
+                </Box>
+                <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text>Created By: {event.createdBy}</Text>
                 </Box>
 
                 <Box

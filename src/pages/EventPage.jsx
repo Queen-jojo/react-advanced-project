@@ -17,6 +17,8 @@ import {
   FormLabel,
   Input,
   Textarea,
+  Flex,
+  SimpleGrid,
 } from "@chakra-ui/react";
 // import { ToastContainer, useToast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -124,6 +126,16 @@ export const EventPage = () => {
     }
   };
 
+  // const CategoryTitle = (categoryIds) => {
+  //   console.log("categoryIds", categoryIds);
+  //   console.log("categories", categories);
+  //   return categoryIds.map(
+  //     (categoryId) =>
+  //       categories.find((category) => category.id === categoryId).name
+  //   );
+  //   // return categoryIds;
+  // };
+
   // const eventInfo = CategoryTitle(event.categoryIds);
   // console.log("eventInfo:", eventInfo);
 
@@ -132,102 +144,150 @@ export const EventPage = () => {
 
   // console.log("event.creator", event.creator);
 
+  // {filteredEvents.map((event) => {
+  //   console.log("event/hello:", event);
+  //   const eventInfo = CategoryTitle(event.categoryIds);
+  //   console.log("eventInfo:", eventInfo);
+  // })}
+
   return (
-    <Box>
-      <Heading>{event.title}</Heading>
-      <Image src={event.image} alt={event.title} />
-      <Text>{event.description}</Text>
-      <Text>Start Time: {event.startTime}</Text>
-      <Text>End Time: {event.endTime}</Text>
-      <Text>Categories: {event.categoryIds}</Text>
-      {/* <Text>creator: {creator.name}</Text> */}
-      {/* <Text>Created by: {event.creator.name}</Text> */}
-      {/* <Image src={event.image} alt={event.name} /> */}
-      <Button colorScheme="purple" onClick={handleEdit}>
-        Edit
-      </Button>
-      <Button colorScheme="red" onClick={handleDelete}>
-        Delete
-      </Button>
+    <Flex direction="column" bgColor="pink.100" minH="100vh" overflowY="auto">
+      <Box p={4} display="flex" alignItems="center" justifyContent="center">
+        <SimpleGrid>
+          <Box p={2} display="flex" alignItems="center" justifyContent="center">
+            <Heading as="h3">{event.title}</Heading>
+          </Box>
+          <Box p={2} display="flex" alignItems="center" justifyContent="center">
+            <Text>{event.description}</Text>
+          </Box>
+          <Box p={2} display="flex" alignItems="center" justifyContent="center">
+            <Image
+              src={event.image}
+              alt={event.title}
+              borderRadius="md"
+              mb={4}
+              width="700px"
+              height="550px"
+            />
+          </Box>
+          <Box p={2} display="flex" alignItems="center" justifyContent="center">
+            <Text>Created By: {event.createdBy}</Text>
+          </Box>
+          <Box p={2} display="flex" alignItems="center" justifyContent="center">
+            <Text>Location: {event.location}</Text>
+          </Box>
 
-      {isEditing && (
-        <Modal isOpen={isEditing} onClose={() => setIsEditing(false)}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Edit Event</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <form onSubmit={handleSaveEdit}>
-                <FormControl>
-                  <FormLabel htmlFor="title">Title</FormLabel>
-                  <Input id="title" name="title" defaultValue={event.title} />
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel htmlFor="description">Description</FormLabel>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    defaultValue={event.description}
-                  />
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel htmlFor="categories">Categories</FormLabel>
-                  <Textarea
-                    id="categories"
-                    name="categories"
-                    defaultValue={event.categories}
-                  />
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel htmlFor="startTime">Start Time:</FormLabel>
-                  <Textarea
-                    id="startTime"
-                    name="startTime"
-                    defaultValue={event.startTime}
-                  />
-                </FormControl>
-              </form>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                onClick={() => setIsEditing(false)}
-                colorScheme="blue"
-                mr={3}
-                type="submit"
-              >
-                Save
-              </Button>
-              <Button
-                onClick={() => setIsEditing(false)}
-                colorScheme="red"
-                mr={3}
-              >
-                Cancel
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      )}
+          <Box p={2} display="flex" alignItems="center" justifyContent="center">
+            <Text>Start Time: {event.startTime}</Text>
+          </Box>
+          <Box p={2} display="flex" alignItems="center" justifyContent="center">
+            <Text>End Time: {event.endTime}</Text>
+          </Box>
+          {/* <Box
+                  p={2}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text>Categories: {eventInfo}</Text>
+                </Box> */}
+          <Text>Categories: {event.categoryIds}</Text>
+          {/* <Text>creator: {creator.name}</Text> */}
+          {/* <Text>Created by: {event.creator.name}</Text> */}
+          {/* <Image src={event.image} alt={event.name} /> */}
+          <Box p={2} display="flex" alignItems="center" justifyContent="center">
+            <Button colorScheme="purple" onClick={handleEdit}>
+              Edit
+            </Button>
+            <Button colorScheme="red" onClick={handleDelete}>
+              Delete
+            </Button>
+          </Box>
 
-      {isDeleting && (
-        <Modal isOpen={isDeleting} onClose={() => setIsDeleting(false)}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Confirm removed Event</ModalHeader>
-            <ModalBody>
-              Are you sure you want to delete this event? This action cannot be
-              undone.
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="red" mr={3} onClick={confirmDelete}>
-                Remove Event
-              </Button>
-              <Button onClick={() => setIsDeleting(false)}>Cancel</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      )}
-      {/* <ToastContainer /> */}
-    </Box>
+          {isEditing && (
+            <Modal isOpen={isEditing} onClose={() => setIsEditing(false)}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Edit Event</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <form onSubmit={handleSaveEdit}>
+                    <FormControl>
+                      <FormLabel htmlFor="title">Title</FormLabel>
+                      <Input
+                        id="title"
+                        name="title"
+                        defaultValue={event.title}
+                      />
+                    </FormControl>
+                    <FormControl mt={4}>
+                      <FormLabel htmlFor="description">Description</FormLabel>
+                      <Textarea
+                        id="description"
+                        name="description"
+                        defaultValue={event.description}
+                      />
+                    </FormControl>
+                    <FormControl mt={4}>
+                      <FormLabel htmlFor="categories">Categories</FormLabel>
+                      <Textarea
+                        id="categories"
+                        name="categories"
+                        defaultValue={event.categories}
+                      />
+                    </FormControl>
+                    <FormControl mt={4}>
+                      <FormLabel htmlFor="startTime">Start Time:</FormLabel>
+                      <Textarea
+                        id="startTime"
+                        name="startTime"
+                        defaultValue={event.startTime}
+                      />
+                    </FormControl>
+                  </form>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    onClick={() => setIsEditing(false)}
+                    colorScheme="blue"
+                    mr={3}
+                    type="submit"
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    onClick={() => setIsEditing(false)}
+                    colorScheme="red"
+                    mr={3}
+                  >
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          )}
+
+          {isDeleting && (
+            <Modal isOpen={isDeleting} onClose={() => setIsDeleting(false)}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Confirm removed Event</ModalHeader>
+                <ModalBody>
+                  Are you sure you want to delete this event? This action cannot
+                  be undone.
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme="red" mr={3} onClick={confirmDelete}>
+                    Remove Event
+                  </Button>
+                  <Button onClick={() => setIsDeleting(false)}>Cancel</Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          )}
+          {/* <ToastContainer /> */}
+        </SimpleGrid>
+      </Box>
+    </Flex>
   );
 };
