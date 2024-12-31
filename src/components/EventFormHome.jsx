@@ -14,14 +14,14 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-const EventForm = ({ categories }) => {
+const EventFormHome = ({ categories }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [createdBy, setCreatedBy] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
   const [categoryIds, setCategoryIds] = useState("");
-  const [location, setLocation] = useState("Amsterdam");
+  const [location, setLocation] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
@@ -157,4 +157,4 @@ const EventForm = ({ categories }) => {
   );
 };
 
-export default EventForm;
+export default EventFormHome;

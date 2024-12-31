@@ -18,7 +18,7 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import { useLoaderData, NavLink } from "react-router-dom";
-import EventForm from "../components/EventForm";
+import EventFormHome from "../components/EventFormHome";
 import { useNavigate } from "react-router-dom";
 // import events from "./backend_data/events.json";
 
@@ -36,7 +36,7 @@ export const EventsPage = () => {
   // const [events, setEvents] = useState([]);
   // const { eventId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories] = useState([]);
   const { events, categories } = useLoaderData();
   console.log("events", events);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -44,6 +44,28 @@ export const EventsPage = () => {
   const [eventIdToDelete, setEventIdToDelete] = useState(null);
   const navigate = useNavigate();
   const toast = useToast();
+
+  const handleSelectionChange = (e) => {
+    console.log(e.target.selectedOptions);
+    const selectedValues = Array.from(e.target.selectedOptions).map((option) =>
+      parseInt(option.value, 10)
+    );
+    console.log("selectedValues:", selectedValues);
+    console.log("filteredEvents", filteredEvents);
+    // setCategoryIds(selectedValues);
+    // selectedCategories.length === 0 ||
+    const filterDrop = filteredEvents.filter((dropDown) => {
+      // tijdelijk.categoryIds.some
+      return dropDown.categoryIds.some((dropList) => {
+        return selectedValues.includes(dropList);
+      });
+
+      // return matchesSearch && matchesCategories;
+    });
+
+    console.log("filterDrop", filterDrop);
+    setFilteredEvents(filterDrop);
+  };
 
   useEffect(() => {
     const filteredEvents = events.filter((event) => {
@@ -90,21 +112,6 @@ export const EventsPage = () => {
     }
   };
 
-  // const confirmDelete = () => {
-  //   if (eventIdToDelete) {
-  //     filteredEvents.filter((event) => {
-  //       if (event.id === eventIdToDelete) {
-  //         const newFilteredEvents = filteredEvents.filter(
-  //           (event) => event.id !== eventIdToDelete
-  //         );
-  //         console.log("newFilteredEvents", newFilteredEvents);
-  //         setIsDeleting(false);
-  //         setFilteredEvents(newFilteredEvents);
-  //       }
-  //     });
-  //   }
-  // };
-
   const deleteEvent = (e, eventId) => {
     console.log("eventId", eventId);
     e.preventDefault();
@@ -142,19 +149,17 @@ export const EventsPage = () => {
         />
       </Box>
       <Box p={4} display="flex" alignItems="center" justifyContent="center">
-        <Select
-          multiplevalue={selectedCategories}
-          onChange={(selectedOptions) => setSelectedCategories(selectedOptions)}
-          options={uniqueCategories.map((category) => ({
-            value: category,
-            label: category,
-          }))}
-          placeholder="Filtered by Category"
-        />
+        <Select onChange={handleSelectionChange}>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </Select>
       </Box>
 
       <Box p={4} display="flex" alignItems="left" justifyContent="left">
-        <EventForm categories={categories} />
+        <EventFormHome categories={categories} />
       </Box>
 
       <Box flex="1" p={4}>
