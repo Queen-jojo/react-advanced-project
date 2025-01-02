@@ -54,10 +54,10 @@ export const EventsPage = () => {
     console.log("filteredEvents", filteredEvents);
     // setCategoryIds(selectedValues);
     // selectedCategories.length === 0 ||
-    const filterDrop = filteredEvents.filter((dropDown) => {
+    const filterDrop = events.filter((event) => {
       // tijdelijk.categoryIds.some
-      return dropDown.categoryIds.some((dropList) => {
-        return selectedValues.includes(dropList);
+      return event.categoryIds.some((categoryId) => {
+        return selectedValues.includes(categoryId);
       });
 
       // return matchesSearch && matchesCategories;
