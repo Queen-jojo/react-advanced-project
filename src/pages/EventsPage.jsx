@@ -122,11 +122,12 @@ export const EventsPage = () => {
   const CategoryTitle = (categoryIds) => {
     console.log("categoryIds", categoryIds);
     console.log("categories", categories);
-    return categoryIds.map(
+    const nameCategory = categoryIds.map(
       (categoryId) =>
         categories.find((category) => category.id === categoryId).name
     );
-    // return categoryIds;
+    const categoryInformation = nameCategory.join(", ");
+    return categoryInformation;
   };
 
   const uniqueCategories = [

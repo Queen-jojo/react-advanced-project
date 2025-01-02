@@ -62,7 +62,7 @@ export const EventPage = () => {
       (categoryId) =>
         categories.find((category) => category.id === categoryId).name
     );
-    console.log("appel", CategoryName);
+    console.log("CategoryName", CategoryName);
     const CategoryInfo = CategoryName.join(", ");
     return CategoryInfo;
   };
