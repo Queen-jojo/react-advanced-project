@@ -13,14 +13,13 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  useToast,
   Flex,
   SimpleGrid,
 } from "@chakra-ui/react";
 import { useLoaderData, NavLink } from "react-router-dom";
 import EventFormHome from "../components/EventFormHome";
-import { useNavigate } from "react-router-dom";
-// import events from "./backend_data/events.json";
+// import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 export const loader = async () => {
   const response = await fetch("http://localhost:3000/events");
@@ -42,8 +41,8 @@ export const EventsPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [eventIdToDelete, setEventIdToDelete] = useState(null);
-  const navigate = useNavigate();
-  const toast = useToast();
+  // const navigate = useNavigate();
+  // const toast = useToast();
 
   const handleSelectionChange = (e) => {
     console.log(e.target.selectedOptions);
@@ -98,7 +97,9 @@ export const EventsPage = () => {
 
       if (response.ok) {
         // navigate("/events");
-        toast.success("Event deleted succesfully");
+        toast.success("Event deleted succesfully", {
+          position: "top-right",
+        });
       } else {
         console.error("Error deleting event:", response.statusText);
         toast.error("Error deleting event. Please try again");
@@ -108,7 +109,7 @@ export const EventsPage = () => {
       toast.error("An error occured while deleting the event.");
     } finally {
       setIsDeleting(false);
-      navigate(0);
+      // navigate(0);
     }
   };
 
@@ -275,6 +276,7 @@ export const EventsPage = () => {
                 <Button colorScheme="red" mr={3} onClick={confirmDelete}>
                   Remove Event
                 </Button>
+                <ToastContainer />
                 <Button onClick={() => setIsDeleting(false)}>Cancel</Button>
               </ModalFooter>
             </ModalContent>

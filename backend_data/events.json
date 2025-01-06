@@ -66,19 +66,6 @@
       "endTime": "2023-03-09T07:00:00.000Z"
     },
     {
-      "createdBy": "Lory",
-      "title": "a",
-      "description": "b",
-      "image": "",
-      "categoryIds": [
-        1
-      ],
-      "location": "Amsterdam",
-      "startTime": "c",
-      "endTime": "d",
-      "id": 5
-    },
-    {
       "createdBy": "Cusan",
       "title": "h",
       "description": "j",
@@ -90,32 +77,6 @@
       "startTime": "k",
       "endTime": "l",
       "id": 6
-    },
-    {
-      "createdBy": "John",
-      "title": "g",
-      "description": "l",
-      "image": "https://weaquatics.com/wp-content/uploads/influential-swimmers.png",
-      "categoryIds": [
-        2
-      ],
-      "location": "Amsterdam",
-      "startTime": "10.00",
-      "endTime": "12.00",
-      "id": 7
-    },
-    {
-      "createdBy": "Jamie",
-      "title": "q",
-      "description": "w",
-      "image": "https://weaquatics.com/wp-content/uploads/influential-swimmers.png",
-      "categoryIds": [
-        2
-      ],
-      "location": "Amsterdam",
-      "startTime": "13.00",
-      "endTime": "15.00",
-      "id": 8
     }
   ],
   "categories": [
