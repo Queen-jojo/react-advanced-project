@@ -13,14 +13,15 @@ import {
   Input,
   useDisclosure,
 } from "@chakra-ui/react";
+import { toast } from "react-toastify";
 
-const EventFormHome = ({ categories }) => {
+const EventFormHome = ({ categories, validEvents, setValidEvents }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [createdBy, setCreatedBy] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
-  const [categoryIds, setCategoryIds] = useState("");
+  const [categoryIds, setCategoryIds] = useState([]);
   const [location, setLocation] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -45,28 +46,37 @@ const EventFormHome = ({ categories }) => {
       console.log("startTime", startTime);
       console.log("endTime", endTime);
 
+      const data = {
+        createdBy,
+        title,
+        description,
+        image,
+        categoryIds,
+        location,
+        startTime,
+        endTime,
+      };
+
+      setValidEvents([...validEvents, data]);
+
       const response = await fetch(" http://localhost:3000/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          createdBy,
-          title,
-          description,
-          image,
-          categoryIds,
-          location,
-          startTime,
-          endTime,
-        }),
+        body: JSON.stringify(data),
       });
+      const newEvent = await response.json();
+      setValidEvents([...validEvents, newEvent]);
 
       // const CategoryInfo = (categories) => {
       //   // return categoryIds;
       // };
 
       if (response.ok) {
+        toast.success("Event added succesfully", {
+          postion: "top-right",
+        });
         console.log("Event added successfully");
         onClose();
       } else {
@@ -149,7 +159,9 @@ const EventFormHome = ({ categories }) => {
             <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button colorScheme="red" mr={3} onClick={onClose}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

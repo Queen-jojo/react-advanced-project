@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import EventFormEvent from "../components/EventFormEvent";
 import { useLoaderData } from "react-router-dom";
 import { Box, Heading, Text, Image, Flex, SimpleGrid } from "@chakra-ui/react";
 // import { ToastContainer, useToast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export const loader = async ({ params }) => {
   console.log("params", params.eventId);
@@ -20,6 +19,7 @@ export const loader = async ({ params }) => {
 
 export const EventPage = () => {
   const { event, categories } = useLoaderData();
+  const [validEvent, setValidEvent] = useState(event);
   console.log("event", event);
 
   // const CategoryTitle = (categoryIds) => {
@@ -67,7 +67,7 @@ export const EventPage = () => {
     return CategoryInfo;
   };
 
-  const eventInfo = CategoryTitle(event.categoryIds);
+  const eventInfo = CategoryTitle(validEvent.categoryIds);
   console.log("eventInfo:", eventInfo);
 
   const uniqueCategories = [
@@ -80,15 +80,15 @@ export const EventPage = () => {
       <Box p={4} display="flex" alignItems="center" justifyContent="center">
         <SimpleGrid>
           <Box p={2} display="flex" alignItems="center" justifyContent="center">
-            <Heading as="h3">{event.title}</Heading>
+            <Heading as="h3">{validEvent.title}</Heading>
           </Box>
           <Box p={2} display="flex" alignItems="center" justifyContent="center">
-            <Text>{event.description}</Text>
+            <Text>{validEvent.description}</Text>
           </Box>
           <Box p={2} display="flex" alignItems="center" justifyContent="center">
             <Image
-              src={event.image}
-              alt={event.title}
+              src={validEvent.image}
+              alt={validEvent.title}
               borderRadius="md"
               mb={4}
               width="700px"
@@ -96,24 +96,24 @@ export const EventPage = () => {
             />
           </Box>
           <Box p={2} display="flex" alignItems="center" justifyContent="center">
-            <Text>Created By: {event.createdBy}</Text>
+            <Text>Created By: {validEvent.createdBy}</Text>
           </Box>
           <Box p={2} display="flex" alignItems="center" justifyContent="center">
-            <Text>Location: {event.location}</Text>
+            <Text>Location: {validEvent.location}</Text>
           </Box>
 
           <Box p={2} display="flex" alignItems="center" justifyContent="center">
-            <Text>Start Time: {event.startTime}</Text>
+            <Text>Start Time: {validEvent.startTime}</Text>
           </Box>
           <Box p={2} display="flex" alignItems="center" justifyContent="center">
-            <Text>End Time: {event.endTime}</Text>
+            <Text>End Time: {validEvent.endTime}</Text>
           </Box>
           <Box p={2} display="flex" alignItems="center" justifyContent="center">
             <Text>Categories: {eventInfo}</Text>
           </Box>
 
           <Box p={4} display="flex" alignItems="center" justifyContent="center">
-            <EventFormEvent />
+            <EventFormEvent setValidEvent={setValidEvent} />
           </Box>
         </SimpleGrid>
       </Box>

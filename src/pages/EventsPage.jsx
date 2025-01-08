@@ -18,8 +18,8 @@ import {
 } from "@chakra-ui/react";
 import { useLoaderData, NavLink } from "react-router-dom";
 import EventFormHome from "../components/EventFormHome";
-// import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const loader = async () => {
   const response = await fetch("http://localhost:3000/events");
@@ -32,42 +32,33 @@ export const loader = async () => {
 };
 
 export const EventsPage = () => {
-  // const [events, setEvents] = useState([]);
-  // const { eventId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories] = useState([]);
   const { events, categories } = useLoaderData();
-  console.log("events", events);
   const [isDeleting, setIsDeleting] = useState(false);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [eventIdToDelete, setEventIdToDelete] = useState(null);
-  // const navigate = useNavigate();
-  // const toast = useToast();
+  const [validEvents, setValidEvents] = useState(events);
 
   const handleSelectionChange = (e) => {
-    console.log(e.target.selectedOptions);
+    if (e.target.value === "") {
+      setFilteredEvents(events);
+      return;
+    }
     const selectedValues = Array.from(e.target.selectedOptions).map((option) =>
       parseInt(option.value, 10)
     );
-    console.log("selectedValues:", selectedValues);
-    console.log("filteredEvents", filteredEvents);
-    // setCategoryIds(selectedValues);
-    // selectedCategories.length === 0 ||
     const filterDrop = events.filter((event) => {
-      // tijdelijk.categoryIds.some
       return event.categoryIds.some((categoryId) => {
         return selectedValues.includes(categoryId);
       });
-
-      // return matchesSearch && matchesCategories;
     });
 
-    console.log("filterDrop", filterDrop);
     setFilteredEvents(filterDrop);
   };
 
   useEffect(() => {
-    const filteredEvents = events.filter((event) => {
+    const _filteredEvents = validEvents.filter((event) => {
       const lowerCaseTitle = event.title.toLowerCase();
       const lowerCaseDescription = event.description.toLowerCase();
       const lowerCaseSearchQuery = searchQuery.toLowerCase();
@@ -83,10 +74,11 @@ export const EventsPage = () => {
         );
       return matchesSearch && matchesCategories;
     });
-    setFilteredEvents(filteredEvents);
-  }, [events, searchQuery, selectedCategories]);
+    setFilteredEvents(_filteredEvents);
+  }, [validEvents, searchQuery, selectedCategories]);
 
   const confirmDelete = async () => {
+    console.log("eventIdToDelete", eventIdToDelete);
     try {
       const response = await fetch(
         `http://localhost:3000/events/${eventIdToDelete}`,
@@ -95,8 +87,19 @@ export const EventsPage = () => {
         }
       );
 
+      /* Modify the list of events being used in the useState
+       This is the list of events used in line 164:
+
+       {filteredEvents.map((event) => {
+
+        Because at the beginning of the page load, we call the line below in line 66
+
+        const filteredEvents = validEvents.filter((event) => {
+
+       */
+      setValidEvents(validEvents.filter((item) => item.id !== eventIdToDelete));
+
       if (response.ok) {
-        // navigate("/events");
         toast.success("Event deleted succesfully", {
           position: "top-right",
         });
@@ -109,12 +112,10 @@ export const EventsPage = () => {
       toast.error("An error occured while deleting the event.");
     } finally {
       setIsDeleting(false);
-      // navigate(0);
     }
   };
 
-  const deleteEvent = (e, eventId) => {
-    console.log("eventId", eventId);
+  const deleteEvent = async (e, eventId) => {
     e.preventDefault();
     setIsDeleting(true);
     setEventIdToDelete(eventId);
@@ -122,19 +123,13 @@ export const EventsPage = () => {
 
   const CategoryTitle = (categoryIds) => {
     console.log("categoryIds", categoryIds);
-    console.log("categories", categories);
     const nameCategory = categoryIds.map(
       (categoryId) =>
-        categories.find((category) => category.id === categoryId).name
+        categories.find((category) => parseInt(category.id) === categoryId).name
     );
     const categoryInformation = nameCategory.join(", ");
     return categoryInformation;
   };
-
-  const uniqueCategories = [
-    ...new Set(events.flatMap((event) => event.categoryIds)),
-  ];
-  console.log("unique", uniqueCategories);
 
   return (
     <Flex direction="column" bgColor="pink.100" minH="100vh" overflowY="auto">
@@ -152,6 +147,9 @@ export const EventsPage = () => {
       </Box>
       <Box p={4} display="flex" alignItems="center" justifyContent="center">
         <Select onChange={handleSelectionChange}>
+          <option key="" value="">
+            Categories
+          </option>
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
@@ -161,15 +159,17 @@ export const EventsPage = () => {
       </Box>
 
       <Box p={4} display="flex" alignItems="left" justifyContent="left">
-        <EventFormHome categories={categories} />
+        <EventFormHome
+          categories={categories}
+          validEvents={validEvents}
+          setValidEvents={setValidEvents}
+        />
       </Box>
 
       <Box flex="1" p={4}>
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }}>
           {filteredEvents.map((event) => {
-            console.log("event/hello:", event);
             const eventInfo = CategoryTitle(event.categoryIds);
-            console.log("eventInfo:", eventInfo);
 
             return (
               <NavLink key={event.id} to={`/event/${event.id}`}>
@@ -276,13 +276,13 @@ export const EventsPage = () => {
                 <Button colorScheme="red" mr={3} onClick={confirmDelete}>
                   Remove Event
                 </Button>
-                <ToastContainer />
                 <Button onClick={() => setIsDeleting(false)}>Cancel</Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
         </SimpleGrid>
       </Box>
+      <ToastContainer />
     </Flex>
   );
 };

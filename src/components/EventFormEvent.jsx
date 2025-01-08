@@ -15,8 +15,10 @@ import {
   useDisclosure,
   Box,
 } from "@chakra-ui/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const EventFormEvent = () => {
+const EventFormEvent = ({ setValidEvent }) => {
   const { eventId } = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -81,29 +83,37 @@ const EventFormEvent = () => {
       console.log("startTime", startTime);
       console.log("endTime", endTime);
 
+      const dataEvent = {
+        createdBy,
+        title,
+        description,
+        image,
+        categoryIds,
+        location,
+        startTime,
+        endTime,
+      };
+
+      setValidEvent(dataEvent);
+
       const response = await fetch(`http://localhost:3000/events/${eventId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          createdBy,
-          title,
-          description,
-          image,
-          categoryIds,
-          location,
-          startTime,
-          endTime,
-        }),
+        body: JSON.stringify(dataEvent),
       });
+      console.log("response", response);
 
       // const CategoryInfo = (categories) => {
       //   // return categoryIds;
       // };
 
       if (response.ok) {
-        console.log("Event added successfully");
+        toast.success("Event changed succesfully", {
+          position: "top-right",
+        });
+        console.log("Event edit successfully");
         onClose();
       } else {
         console.error("Error adding event:", await response.text());
@@ -113,7 +123,6 @@ const EventFormEvent = () => {
       console.error("Error:", error);
       // Handle error, display error message to user
     }
-    navigate(0);
   };
 
   const handleDelete = () => {
@@ -128,14 +137,11 @@ const EventFormEvent = () => {
 
       if (response.ok) {
         navigate("/");
-        // toast.success("Event deleted succesfully");
       } else {
         console.error("Error deleting event:", response.statusText);
-        // toast.error("Error deleting event. Please try again");
       }
     } catch (error) {
       console.error("Error:", error);
-      // toast.error("An error occured while deleting the event.");
     } finally {
       setIsDeleting(false);
     }
@@ -217,7 +223,9 @@ const EventFormEvent = () => {
             <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button colorScheme="red" mr={3} onClick={onClose}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -239,6 +247,7 @@ const EventFormEvent = () => {
           </ModalContent>
         </Modal>
       )}
+      <ToastContainer />
     </>
   );
 };
