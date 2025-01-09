@@ -33,15 +33,6 @@ const EventFormEvent = ({ setValidEvent }) => {
   const [endTime, setEndTime] = useState("");
   const navigate = useNavigate();
 
-  // const handleSelectionChange = (e) => {
-  //   console.log(e.target.selectedOptions);
-  //   const selectedValues = Array.from(e.target.selectedOptions).map((option) =>
-  //     parseInt(option.value, 10)
-  //   );
-  //   console.log("selectedValues:", selectedValues);
-  //   setCategoryIds(selectedValues);
-  // };
-
   const fetchEvent = async () => {
     try {
       const response = await fetch(`http://localhost:3000/events/${eventId}`);
@@ -104,10 +95,6 @@ const EventFormEvent = ({ setValidEvent }) => {
         body: JSON.stringify(dataEvent),
       });
       console.log("response", response);
-
-      // const CategoryInfo = (categories) => {
-      //   // return categoryIds;
-      // };
 
       if (response.ok) {
         toast.success("Event changed succesfully", {
@@ -183,16 +170,6 @@ const EventFormEvent = ({ setValidEvent }) => {
               />
             </FormControl>
 
-            {/* <FormControl>
-              <FormLabel>Categories</FormLabel>
-              <select multiple onChange={handleSelectionChange}>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </FormControl> */}
             <FormControl>
               <FormLabel>Image</FormLabel>
               <Input value={image} onChange={(e) => setImage(e.target.value)} />

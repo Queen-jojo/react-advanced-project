@@ -34,8 +34,8 @@
         2
       ],
       "location": "15 Main St.",
-      "startTime": "2023-04-06T18:46",
-      "endTime": "2023-04-06T17:46",
+      "startTime": "14:46",
+      "endTime": "17:46",
       "id": 2
     },
     {
@@ -53,7 +53,6 @@
       "id": 3
     },
     {
-      "id": 4,
       "createdBy": "Simone",
       "title": "Yoga",
       "description": "It's a bit of a stretch.",
@@ -62,8 +61,9 @@
         3
       ],
       "location": "Shavasana Yoga School",
-      "startTime": "2023-03-09T06:00:00.000Z",
-      "endTime": "2023-03-09T07:00:00.000Z"
+      "startTime": "10:00",
+      "endTime": "12:00",
+      "id": 4
     },
     {
       "createdBy": "Jane",

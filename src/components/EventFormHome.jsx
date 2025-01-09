@@ -69,10 +69,6 @@ const EventFormHome = ({ categories, validEvents, setValidEvents }) => {
       const newEvent = await response.json();
       setValidEvents([...validEvents, newEvent]);
 
-      // const CategoryInfo = (categories) => {
-      //   // return categoryIds;
-      // };
-
       if (response.ok) {
         toast.success("Event added succesfully", {
           postion: "top-right",

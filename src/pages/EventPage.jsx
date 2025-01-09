@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import EventFormEvent from "../components/EventFormEvent";
 import { useLoaderData } from "react-router-dom";
 import { Box, Heading, Text, Image, Flex, SimpleGrid } from "@chakra-ui/react";
-// import { ToastContainer, useToast } from "react-toastify";
 
 export const loader = async ({ params }) => {
   console.log("params", params.eventId);
@@ -22,38 +21,9 @@ export const EventPage = () => {
   const [validEvent, setValidEvent] = useState(event);
   console.log("event", event);
 
-  // const CategoryTitle = (categoryIds) => {
-  //   console.log("categoryIds", categoryIds);
-  //   return categoryIds;
-  // };
-
-  // useEffect(() => {
-  //   const fetchEvent = async () => {
-  //     const response = await fetch(`http://localhost:3000/events/${eventId}`);
-  //     console.log("responseId", eventId);
-  //     const data = await response.json();
-  //     setEvent(data);
-  //   };
-
-  //   fetchEvent();
-  // }, [eventId]);
-
   if (!event) {
     return <Box>Loading...</Box>;
   }
-
-  // const CategoryTitle = (categoryIds) => {
-  //   console.log("categoryIds", categoryIds);
-  //   return categoryIds;
-  // };
-
-  // const eventInfo = CategoryTitle(event.categoryIds);
-  // console.log("eventInfo:", eventInfo);
-
-  // const eventInfo = CategoryTitle(event.categoryIds);
-  // console.log("eventInfo:", eventInfo);
-
-  // console.log("event.creator", event.creator);
 
   const CategoryTitle = (categoryIds) => {
     console.log("categoryIds", categoryIds);
@@ -70,9 +40,7 @@ export const EventPage = () => {
   const eventInfo = CategoryTitle(validEvent.categoryIds);
   console.log("eventInfo:", eventInfo);
 
-  const uniqueCategories = [
-    // ...new Set(event.flatMap((event) => event.categoryIds)),
-  ];
+  const uniqueCategories = [];
   console.log("unique", uniqueCategories);
 
   return (
